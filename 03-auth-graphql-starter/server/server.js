@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const models = require('./models');
 const expressGraphQL = require('express-graphql');
@@ -11,15 +12,16 @@ const schema = require('./schema/schema');
 // Create a new Express application
 const app = express();
 
-// Replace with your mongoLab URI
-const MONGO_URI = '';
+if (!process.env.MONGO_URI) {
+  throw new Error('You must provide a MongoLab URI');
+}
 
 // Mongoose's built in promise library is deprecated, replace it with ES2015 Promise
 mongoose.Promise = global.Promise;
 
 // Connect to the mongoDB instance and log a message
 // on success or failure
-mongoose.connect(MONGO_URI);
+mongoose.connect(process.env.MONGO_URI);
 mongoose.connection
     .once('open', () => console.log('Connected to MongoLab instance.'))
     .on('error', error => console.log('Error connecting to MongoLab:', error));
